@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: dataprocessing-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: datadb
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: devpass
+    ports:
+      - "5433:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dataprocessing-app
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    environment:
+      # point Spring Boot to the Docker network Postgres service
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/datadb
+      SPRING_DATASOURCE_USERNAME: devuser
+      SPRING_DATASOURCE_PASSWORD: devpass
+      APP_FILE_STORAGE: /var/log/applications/API/dataprocessing
+    volumes:
+      # Mount to the specified storage path
+      - ./data:/var/log/applications/API/dataprocessing
+
+volumes:
+  db_data:

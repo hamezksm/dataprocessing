@@ -1,0 +1,151 @@
+{
+    "info": {
+        "name": "DataProcessing API",
+        "_postman_id": "3b5e1f3c-0000-4d6a-9999-0a1b2c3d4e5f",
+        "description": "Collection for the dataprocessing Spring Boot API (localhost:8080)",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Generate Excel",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8080/api/data/generate?numberOfRecords=10",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "8080",
+                    "path": ["api", "data", "generate"],
+                    "query": [{ "key": "numberOfRecords", "value": "10" }]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Process Excel (upload)",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "file",
+                            "type": "file",
+                            "src": ""
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "http://localhost:8080/api/data/process",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "8080",
+                    "path": ["api", "data", "process"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Upload CSV (save students)",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "file",
+                            "type": "file",
+                            "src": ""
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "http://localhost:8080/api/data/upload",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "8080",
+                    "path": ["api", "data", "upload"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Student report (paged)",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8080/api/students/report?page=0&size=20",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "8080",
+                    "path": ["api", "students", "report"],
+                    "query": [
+                        { "key": "page", "value": "0" },
+                        { "key": "size", "value": "20" }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Export students - Excel",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8080/api/students/export/excel",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "8080",
+                    "path": ["api", "students", "export", "excel"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Export students - CSV",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8080/api/students/export/csv",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "8080",
+                    "path": ["api", "students", "export", "csv"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Export students - PDF",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8080/api/students/export/pdf",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "8080",
+                    "path": ["api", "students", "export", "pdf"]
+                }
+            },
+            "response": []
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// No prerequest script. You can add auth or dynamic variables here."
+                ]
+            }
+        }
+    ]
+}
