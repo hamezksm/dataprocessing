@@ -16,7 +16,7 @@ This backend application provides REST APIs for:
 
 ### 1. Streaming Excel Generation
 
-Uses \`SXSSFWorkbook\` to generate massive Excel files without loading everything into memory.
+Uses `SXSSFWorkbook` to generate massive Excel files without loading everything into memory.
 
 - **Keeps only 100 rows in memory** at a time
 - Older rows automatically flushed to disk
@@ -24,7 +24,7 @@ Uses \`SXSSFWorkbook\` to generate massive Excel files without loading everythin
 
 ### 2. Streaming Excel Processing (SAX Parser)
 
-Custom \`StreamingExcelReader\` utility using event-based SAX parsing.
+Custom `StreamingExcelReader` utility using event-based SAX parsing.
 
 **Why this matters:**
 
@@ -41,9 +41,9 @@ Custom \`StreamingExcelReader\` utility using event-based SAX parsing.
 
 Docker container configured with:
 
-\`\`\`dockerfile
+```dockerfile
 ENV JAVA_OPTS="-Xms512m -Xmx2g"
-\`\`\`
+```
 
 - Initial heap: 512 MB
 - Maximum heap: 2 GB
@@ -52,9 +52,9 @@ ENV JAVA_OPTS="-Xms512m -Xmx2g"
 
 Increased Apache POI's internal byte array limit:
 
-\`\`\`java
+```java
 IOUtils.setByteArrayMaxOverride(500 * 1024 * 1024); // 500 MB
-\`\`\`
+```
 
 ## Technology Stack
 
@@ -78,22 +78,22 @@ IOUtils.setByteArrayMaxOverride(500 * 1024 * 1024); // 500 MB
 
 1. **Build and start all services**
 
-\`\`\`bash
+```bash
 docker compose up -d --build
-\`\`\`
+```
 
 2. **Verify services are running**
 
-\`\`\`bash
+```bash
 docker ps
 docker compose logs -f app
-\`\`\`
+```
 
 3. **Test the API**
 
-\`\`\`bash
+```bash
 curl http://localhost:8080/api/data/files/excel
-\`\`\`
+```
 
 The backend will be available at **http://localhost:8080**
 
@@ -101,21 +101,21 @@ The backend will be available at **http://localhost:8080**
 
 1. **Start PostgreSQL**
 
-\`\`\`bash
+```bash
 docker run -d --name postgres-dev \\
   -e POSTGRES_DB=datadb \\
   -e POSTGRES_USER=devuser \\
   -e POSTGRES_PASSWORD=devpass \\
   -p 5432:5432 \\
   postgres:15-alpine
-\`\`\`
+```
 
 2. **Build and run**
 
-\`\`\`bash
+```bash
 ./mvnw clean package -DskipTests
 java -Xmx2g -jar target/dataprocessing-0.0.1-SNAPSHOT.jar
-\`\`\`
+```
 
 ## API Endpoints
 
@@ -123,58 +123,58 @@ java -Xmx2g -jar target/dataprocessing-0.0.1-SNAPSHOT.jar
 
 #### Generate Excel
 
-\`\`\`http
+```http
 POST /api/data/generate?numberOfRecords={n}
-\`\`\`
+```
 
 **Example:**
 
-\`\`\`bash
+```bash
 curl -X POST "http://localhost:8080/api/data/generate?numberOfRecords=1000000"
-\`\`\`
+```
 
 #### List Files
 
-\`\`\`http
+```http
 GET /api/data/files/excel    # List Excel files
 GET /api/data/files/csv      # List CSV files
-\`\`\`
+```
 
 #### Process Excel to CSV
 
-\`\`\`http
+```http
 POST /api/data/process?filename={name}
-\`\`\`
+```
 
 **Transformation**: Adds 10 to each score
 
-\`\`\`bash
+```bash
 curl -X POST "http://localhost:8080/api/data/process?filename=students_20251030123456.xlsx"
-\`\`\`
+```
 
 #### Upload CSV to Database
 
-\`\`\`http
+```http
 POST /api/data/upload?filename={name}
-\`\`\`
+```
 
 **Transformation**: Adds 5 to each score (total +15 from original)
 
-\`\`\`bash
+```bash
 curl -X POST "http://localhost:8080/api/data/upload?filename=students_20251030123456_processed_20251030124500.csv"
-\`\`\`
+```
 
 ### Student Reports
 
 #### Get Paginated Report
 
-\`\`\`http
+```http
 GET /api/students/report?page={p}&size={s}&studentId={id}&className={class}
-\`\`\`
+```
 
 **Examples:**
 
-\`\`\`bash
+```bash
 # Get first page
 curl "http://localhost:8080/api/students/report?page=0&size=10"
 
@@ -183,40 +183,40 @@ curl "http://localhost:8080/api/students/report?studentId=12345"
 
 # Filter by class
 curl "http://localhost:8080/api/students/report?className=Class1&page=0&size=25"
-\`\`\`
+```
 
 #### Export Data
 
-\`\`\`http
+```http
 GET /api/students/export/excel?className={class}    # Download Excel
 GET /api/students/export/csv?className={class}      # Download CSV
 GET /api/students/export/pdf?className={class}      # Download PDF
-\`\`\`
+```
 
 ## File Storage
 
-Files are stored at: \`/var/log/applications/API/dataprocessing/\`
+Files are stored at: `/var/log/applications/API/dataprocessing/`
 
 **Docker volume mapping:**
 
-\`\`\`yaml
+```yaml
 volumes:
   - ./data:/var/log/applications/API/dataprocessing
-\`\`\`
+```
 
 **Access files:**
 
-\`\`\`bash
+```bash
 # Inside container
 docker exec dataprocessing-app ls -lh /var/log/applications/API/dataprocessing/
 
 # On host machine
 ls -lh ./data/
-\`\`\`
+```
 
 ## Architecture
 
-\`\`\`text
+```text
 src/main/java/dev/hamez/dataprocessing/
 ├── controller/
 │   ├── DataController.java          # Data generation & processing
@@ -234,7 +234,7 @@ src/main/java/dev/hamez/dataprocessing/
 │   └── RandomDataGenerator.java    # Random data generator
 └── config/
     └── WebConfig.java              # CORS configuration
-\`\`\`
+```
 
 ## Data Flow & Transformations
 
@@ -283,30 +283,30 @@ src/main/java/dev/hamez/dataprocessing/
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| \`SPRING_DATASOURCE_URL\` | \`jdbc:postgresql://db:5432/datadb\` | Database URL |
-| \`SPRING_DATASOURCE_USERNAME\` | \`devuser\` | DB username |
-| \`SPRING_DATASOURCE_PASSWORD\` | \`devpass\` | DB password |
-| \`APP_FILE_STORAGE\` | \`/var/log/applications/API/dataprocessing\` | Storage path |
-| \`JAVA_OPTS\` | \`-Xms512m -Xmx2g\` | JVM options |
+| `SPRING_DATASOURCE_URL` | `jdbc:postgresql://db:5432/datadb` | Database URL |
+| `SPRING_DATASOURCE_USERNAME` | `devuser` | DB username |
+| `SPRING_DATASOURCE_PASSWORD` | `devpass` | DB password |
+| `APP_FILE_STORAGE` | `/var/log/applications/API/dataprocessing` | Storage path |
+| `JAVA_OPTS` | `-Xms512m -Xmx2g` | JVM options |
 
 ### Application Properties
 
-Located in \`src/main/resources/application.properties\`:
+Located in `src/main/resources/application.properties`:
 
-\`\`\`properties
+```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/datadb
 spring.jpa.hibernate.ddl-auto=update
 app.file.storage=/var/log/applications/API/dataprocessing
 server.port=8080
-\`\`\`
+```
 
 ## Testing
 
 ### Run All Tests
 
-\`\`\`bash
+```bash
 ./mvnw test
-\`\`\`
+```
 
 ### Integration Tests
 
@@ -314,7 +314,7 @@ Uses Testcontainers for full workflow testing with automatic PostgreSQL containe
 
 ### Manual Testing Workflow
 
-\`\`\`bash
+```bash
 # 1. Generate Excel
 curl -X POST "http://localhost:8080/api/data/generate?numberOfRecords=10000"
 
@@ -332,17 +332,17 @@ curl -X POST "http://localhost:8080/api/data/upload?filename=students_2025103012
 
 # 6. Query data
 curl "http://localhost:8080/api/students/report?page=0&size=10"
-\`\`\`
+```
 
 ## Troubleshooting
 
 ### OutOfMemoryError
 
-**Symptoms:** \`java.lang.OutOfMemoryError: Java heap space\`
+**Symptoms:** `java.lang.OutOfMemoryError: Java heap space`
 
 **Solutions:**
 
-1. Verify Docker heap size: \`docker exec dataprocessing-app env | grep JAVA_OPTS\`
+1. Verify Docker heap size: `docker exec dataprocessing-app env | grep JAVA_OPTS`
 2. Check using streaming methods: Look for "streaming" in logs
 3. Ensure POI override is set: Look for "POI byte array max override set to 500MB" in logs
 
@@ -350,13 +350,13 @@ curl "http://localhost:8080/api/students/report?page=0&size=10"
 
 **Solutions:**
 
-\`\`\`bash
+```bash
 # Check file exists
 docker exec dataprocessing-app ls /var/log/applications/API/dataprocessing/
 
 # Check storage path in logs
 docker compose logs app | grep "Using storage path"
-\`\`\`
+```
 
 ### Slow Processing
 
@@ -368,25 +368,25 @@ docker compose logs app | grep "Using storage path"
 
 If significantly slower, check:
 
-\`\`\`bash
+```bash
 # Monitor resources
 docker stats dataprocessing-app
 
 # Check for errors
 docker compose logs -f app
-\`\`\`
+```
 
 ## Monitoring
 
 ### View Logs
 
-\`\`\`bash
+```bash
 docker compose logs -f app
-\`\`\`
+```
 
 ### Check Database
 
-\`\`\`bash
+```bash
 docker exec -it dataprocessing-db psql -U devuser -d datadb
 
 # Count records
@@ -394,22 +394,22 @@ SELECT COUNT(*) FROM student;
 
 # Check score range (should be original + 15)
 SELECT MIN(score), MAX(score), AVG(score) FROM student;
-\`\`\`
+```
 
 ### Monitor Progress
 
 During large file processing, logs show:
 
-\`\`\`text
+```text
 INFO ... Starting streaming Excel read...
 INFO ... Processed 100000 rows...
 INFO ... Processed 200000 rows...
 INFO ... Completed streaming Excel read in 60000 ms
-\`\`\`
+```
 
 ## Building
 
-\`\`\`bash
+```bash
 # Clean and build
 ./mvnw clean package
 
@@ -418,7 +418,7 @@ INFO ... Completed streaming Excel read in 60000 ms
 
 # Run locally
 ./mvnw spring-boot:run
-\`\`\`
+```
 
 ## Production Considerations
 
